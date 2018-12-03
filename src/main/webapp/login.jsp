@@ -12,6 +12,7 @@
     <title>$Title$</title>
 </head>
 <body>
+
 <form method="post" action="${pageContext.request.contextPath}/login">
 
     <input type="text" name="name"><br/>
