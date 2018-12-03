@@ -1,4 +1,7 @@
 package controller.command;
 
-public class Command {
+import javax.servlet.http.HttpServletRequest;
+
+public interface Command {
+    String execute(HttpServletRequest request);
 }

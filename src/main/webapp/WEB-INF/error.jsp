@@ -5,12 +5,15 @@
   Time: 14:40
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isErrorPage="true"%>
 <html>
 <head>
-    <title>$Title$</title>
+    <title>ERROR PAGE</title>
 </head>
 <body>
-$END$
+<h2>
+    Error Page<br/>
+    <i>Error <%= exception %></i>
+</h2>
 </body>
 </html>
