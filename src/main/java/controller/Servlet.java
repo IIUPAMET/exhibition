@@ -10,10 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
-@WebServlet("")
+@WebServlet("/")
 public class Servlet extends HttpServlet {
     private Map<String, Command> commands = new HashMap<>();
 
