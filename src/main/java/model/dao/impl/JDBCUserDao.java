@@ -45,6 +45,6 @@ public class JDBCUserDao implements UserDao {
             connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }пш
+        }
     }
 }
