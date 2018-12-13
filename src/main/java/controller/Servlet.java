@@ -13,15 +13,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet("/")
+@WebServlet("/exhib/*")
 public class Servlet extends HttpServlet {
     private Map<String, Command> commands = new HashMap<>();
 
     public void init(ServletConfig servletConfig){
 
         commands.put("home", new HomeCommand());
+        commands.put("index", new IndexCommand());
         commands.put("login", new LoginCommand());
-
+        commands.put("singup", new SingUpCommand());
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -39,7 +40,7 @@ public class Servlet extends HttpServlet {
         String page = command.execute(request);
 
         if (page.contains("redirect: ")) {
-            response.sendRedirect(request.getContextPath() + page.replaceAll("redirect: ", ""));
+            response.sendRedirect(request.getContextPath()+"/exhib/" + page.replaceAll("redirect: ", ""));
         } else {
             request.getRequestDispatcher(page).forward(request,response);
         }
@@ -47,8 +48,8 @@ public class Servlet extends HttpServlet {
 
     private Command getCommand(HttpServletRequest request){
         String path = request.getRequestURI();
-        path = path.substring(path.lastIndexOf("/") + 1);
+        path = path.replaceAll(".*/exhib/" , "");
 
-        return commands.getOrDefault(path, (r)->"/index.jsp");
+        return commands.getOrDefault(path, (r)-> "/index.jsp");
     }
 }

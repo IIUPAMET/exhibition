@@ -1,4 +1,6 @@
 package model.dao;
 
-public interface ExhibitionDao extends GenericDao<Exception> {
+import model.entity.Exhibition;
+
+public interface ExhibitionDao extends GenericDao<Exhibition> {
 }

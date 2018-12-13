@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Exhibition {
     private int id;
-    private Date sartDate;
+    private Date startDate;
     private Date endDate;
     private String name;
     private String thema;
@@ -18,12 +18,12 @@ public class Exhibition {
         this.id = id;
     }
 
-    public Date getSartDate() {
-        return sartDate;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setSartDate(Date sartDate) {
-        this.sartDate = sartDate;
+    public void setStartDate(Date sartDate) {
+        this.startDate = sartDate;
     }
 
     public Date getEndDate() {
@@ -62,7 +62,7 @@ public class Exhibition {
     public String toString() {
         return "Exhibition{" +
                 "id=" + id +
-                ", sartDate=" + sartDate +
+                ", sartDate=" + startDate +
                 ", endDate=" + endDate +
                 ", name='" + name + '\'' +
                 ", thema='" + thema + '\'' +

@@ -1,6 +1,6 @@
-package delivery.model.service;
+package service;
 
-import delivery.model.entity.User;
+import model.entity.User;
 
 import java.util.List;
 import java.util.Map;
@@ -10,12 +10,10 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    Optional<User> login(String login, String pass);
-
-    Map<String, String> validateFields(Map<String, String> fieldMap);
+    User login(String login, String pass);
 
     User create(User user);
 
-    User create(String login, String pass, String firstName, String lastName, String email, String role);
+    User create(String login, String pass, String ukrname, String engname, String email);
 
 }

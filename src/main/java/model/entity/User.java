@@ -7,6 +7,31 @@ public class User {
     private String nameUA;
     private String nameEN;
     private String mail;
+    private Role role = Role.GUEST;
+
+    public enum Role {
+        GUEST("/index.jsp"){},
+        USER("/index.jsp"){},
+        ADMIN("/index.jsp"){};
+
+        private String roleBasePath;
+
+        public String getRoleBasePath() {
+            return roleBasePath;
+        }
+
+        Role(String path){
+            roleBasePath = path;
+        }
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public int getId() {
         return id;

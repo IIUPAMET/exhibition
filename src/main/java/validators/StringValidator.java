@@ -1,4 +1,4 @@
-package com.electricalweb.validators;
+package validators;
 
 public class StringValidator {
 

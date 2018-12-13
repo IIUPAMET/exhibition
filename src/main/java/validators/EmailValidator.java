@@ -1,4 +1,4 @@
-package com.electricalweb.validators;
+package validators;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

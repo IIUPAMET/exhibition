@@ -1,4 +1,26 @@
 package model.dao.mapper;
 
-public class UserMapper {
+import model.entity.User;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
+
+public class UserMapper implements ObjectMapper<User> {
+    @Override
+    public User extractFromResultSet(ResultSet rs) throws SQLException {
+        User user = new User();
+        user.setId(rs.getInt("id"));
+        user.setPass(rs.getString("pass"));
+        user.setLogin(rs.getString("login"));
+        user.setMail(rs.getString("mail"));
+        user.setNameEN(rs.getString("first_name_en"));
+        user.setNameUA(rs.getString("first_name_ua"));
+        return user;
+    }
+
+    @Override
+    public User makeUnique(Map<Integer, User> cache, User teacher) {
+        return null;
+    }
 }
