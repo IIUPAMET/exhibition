@@ -5,6 +5,7 @@ import model.dao.UserDao;
 import model.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
 
@@ -18,8 +19,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(String login, String pass) {
-        User result; //= Optional.empty();
+    public Optional<User> login(String login, String pass) {
+        Optional<User> result; //= Optional.empty();
         try (UserDao userDao = daoFactory.createUserDao()) {
             result = userDao.login(login, pass);
         }

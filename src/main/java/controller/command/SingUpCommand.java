@@ -43,6 +43,10 @@ public class SingUpCommand implements Command {
             return "redirect: login";
         } else {
             request.setAttribute("incorrectMap", uncorectMap);
+            request.setAttribute("ukrname", request.getParameter("ukrname"));
+            request.setAttribute("engname", request.getParameter("engname"));
+            request.setAttribute("email", request.getParameter("email"));
+            request.setAttribute("login", request.getParameter("login"));
             return "/singup.jsp";
         }
     }

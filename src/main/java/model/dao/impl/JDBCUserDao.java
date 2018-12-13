@@ -7,6 +7,7 @@ import util.QueryBundle;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Optional;
 
 public class JDBCUserDao implements UserDao {
     private Connection connection;
@@ -40,7 +41,6 @@ public class JDBCUserDao implements UserDao {
             if (rs.next()) {
                 result = mapper.extractFromResultSet(rs);
             }
-            System.out.println(result);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -62,17 +62,16 @@ public class JDBCUserDao implements UserDao {
 
     }
     @Override
-    public User login(String login, String pass) {
-        User result = new User();
+    public Optional<User> login(String login, String pass) {
+        Optional<User> result = Optional.empty();
         UserMapper mapper = new UserMapper();
         try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.user.login"))) {
             ps.setString(1, login);
             ps.setString(2, pass);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                result = mapper.extractFromResultSet(rs);
+                result = Optional.of(mapper.extractFromResultSet(rs));
             }
-            System.out.println(result);
         } catch (SQLException e) {
             e.printStackTrace();
         }

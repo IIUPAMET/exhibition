@@ -10,7 +10,7 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    User login(String login, String pass);
+    Optional<User> login(String login, String pass);
 
     User create(User user);
 
