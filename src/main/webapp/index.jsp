@@ -39,8 +39,8 @@
             </div>
             <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>
             <button class="btn btn-info btn-lg btn-block" formaction="${pageContext.request.contextPath}/singup.jsp" type="submit">Sign Up</button>
-            <button class="btn btn-info btn-lg btn-block" formaction="${pageContext.request.contextPath}/exhib/guest" type="submit">Start as Guest</button>
-            <button class="btn btn-info btn-lg btn-block" formaction="${pageContext.request.contextPath}/exhib/guest" type="reset">reset</button>
+            <button class="btn btn-info btn-lg btn-block" formaction="${pageContext.request.contextPath}/exhib/home" type="submit">Start as Guest</button>
+            <button class="btn btn-info btn-lg btn-block" type="reset">Reset</button>
         </div>
     </form>
 </div>

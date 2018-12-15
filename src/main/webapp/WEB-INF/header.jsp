@@ -1,4 +1,8 @@
 
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="content"/>
+
+
 <head>
 
     <link href="${pageContext.request.contextPath}/resouces/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -36,6 +40,12 @@
                 </li>
             </ul>
             <!--  search form end -->
+        </div>
+
+        <div class="div_lang" style=" width: 30%">
+            <a href="?sessionLocale=en"><fmt:message key="lang.en"/></a>
+            <br/>
+            <a href="?sessionLocale=ua"><fmt:message key="lang.ua"/></a>
         </div>
 
         <div class="top-nav notification-row">

@@ -9,17 +9,23 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @WebServlet("/exhib/*")
 public class Servlet extends HttpServlet {
     private Map<String, Command> commands = new HashMap<>();
 
+
     public void init(ServletConfig servletConfig){
+        servletConfig.getServletContext()
+                .setAttribute("loggedUsers", new ConcurrentHashMap<String, HttpSession>());
 
         commands.put("home", new HomeCommand());
+        commands.put("admin/createexhibition", new CreateExhibitionCommand());
         commands.put("index", new IndexCommand());
         commands.put("login", new LoginCommand());
         commands.put("singup", new SingUpCommand());
