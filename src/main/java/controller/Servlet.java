@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,11 +25,15 @@ public class Servlet extends HttpServlet {
         servletConfig.getServletContext()
                 .setAttribute("loggedUsers", new ConcurrentHashMap<String, HttpSession>());
 
-        commands.put("home", new HomeCommand());
-        commands.put("admin/createexhibition", new CreateExhibitionCommand());
-        commands.put("index", new IndexCommand());
+        commands.put("home", new HomePageCommand());
+        commands.put("admin/createexhibition", new CreateExhibitionPageCommand());
+        commands.put("admin/create", new CreateExhibitionCommand());
+        commands.put("index", new IndexPageCommand());
         commands.put("login", new LoginCommand());
+        commands.put("logout", new LogOutCommand());
         commands.put("singup", new SingUpCommand());
+        commands.put("user/user", new UserPageCommand());
+
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -43,7 +48,12 @@ public class Servlet extends HttpServlet {
             throws ServletException, IOException {
 
         Command command = getCommand(request);
-        String page = command.execute(request);
+        String page = null;
+        try {
+            page = command.execute(request);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         if (page.contains("redirect: ")) {
             response.sendRedirect(request.getContextPath()+"/exhib/" + page.replaceAll("redirect: ", ""));

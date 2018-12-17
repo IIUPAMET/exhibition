@@ -9,7 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class JDBCExhibitionDao implements ExhibitionDao {
@@ -22,9 +24,21 @@ public class JDBCExhibitionDao implements ExhibitionDao {
 
     @Override
     public void create(Exhibition entity) {
+        try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"))) {
+            ps.setString(1, entity.getName());
+            ps.setDate(2, java.sql.Date.valueOf(entity.getStartDate()));
+            ps.setDate(3, java.sql.Date.valueOf(entity.getEndDate()));
+            ps.setString(4, entity.getThema());
+            ps.setString(5, entity.getAuthor());
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void crateExhibition(String name, LocalDate start, LocalDate end, String theme, String author, String description){
 
     }
-
     @Override
     public Exhibition findById(int id) {
         Exhibition result = new Exhibition();

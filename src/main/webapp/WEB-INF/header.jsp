@@ -14,11 +14,11 @@
     <link href="${pageContext.request.contextPath}/resouces/css/elegant-icons-style.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/resouces/css/font-awesome.min.css" rel="stylesheet" />
 
-    <script src="${pageContext.request.contextPath}/resouces/js/bootstrap.min.js"></script>
     <script src="${pageContext.request.contextPath}/resouces/js/jquery.js"></script>
-    <script src="${pageContext.request.contextPath}/resouces/js/scripts.js"></script>
+    <script src="${pageContext.request.contextPath}/resouces/js/bootstrap.min.js"></script>
     <script src="${pageContext.request.contextPath}/resouces/js/jquery.scrollTo.min.js"></script>
     <script src="${pageContext.request.contextPath}/resouces/js/jquery.nicescroll.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resouces/js/scripts.js"></script>
 
 
 </head>
@@ -42,22 +42,25 @@
             <!--  search form end -->
         </div>
 
-        <div class="div_lang" style=" width: 30%">
-            <a href="?sessionLocale=en"><fmt:message key="lang.en"/></a>
-            <br/>
-            <a href="?sessionLocale=ua"><fmt:message key="lang.ua"/></a>
-        </div>
-
         <div class="top-nav notification-row">
             <!-- notificatoin dropdown start-->
             <ul class="nav pull-right top-menu">
+                <li class="dropdown">
+                    <ul class="dropdown-menu extended notification">
+                        <li>
+                            <a href="?sessionLocale=en"><fmt:message key="lang.en"/></a></li>
+                        <li>
+                            <a href="?sessionLocale=ua"><fmt:message key="lang.ua"/></a></li>
+                    </ul>
+                </li>
+                <li><a href="${pageContext.request.contextPath}/exhib/logout">Logout</a></li>
                 <!-- user login dropdown start-->
                 <li class="dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="profile-ava">
                                 <img alt="" src="img/avatar1_small.jpg">
                             </span>
-                        <span class="username">${user.nameEN}</span>
+                        <span class="username">${user.nameUA}</span>
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu extended logout">

@@ -1,5 +1,6 @@
 package controller.command;
 
+import controller.ServletUtil;
 import model.entity.User;
 import service.*;
 
@@ -10,12 +11,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static controller.ServletUtil.getLoggedUsers;
+
 public class LoginCommand implements Command {
 
     private UserService userService = new UserServiceImpl();
 
     @Override
     public String execute(HttpServletRequest request) {
+
+        if(request.getSession().getAttribute("user") != null){
+
+            return "redirect: logout";
+        }
 
         String login = request.getParameter("login");
         String password = request.getParameter("password");
@@ -33,7 +41,7 @@ public class LoginCommand implements Command {
     }
 
     private void logIn(HttpServletRequest request, User user) {
-        Map<String, HttpSession> loggedUsers = getLoggedUsers(request);
+        Map<String, HttpSession> loggedUsers = ServletUtil.getLoggedUsers(request);
         String login = user.getLogin();
 
         if (loggedUsers.containsKey(login)) {
@@ -41,20 +49,12 @@ public class LoginCommand implements Command {
         }
 
         loggedUsers.put(login, request.getSession());
-        setLoggedUsers(request, loggedUsers);
+        ServletUtil.setLoggedUsers(request, loggedUsers);
 
         sessionSetup(request, user);
     }
 
     private void sessionSetup(HttpServletRequest request, User user) {
         request.getSession().setAttribute("user", user);
-    }
-
-    private Map<String, HttpSession> getLoggedUsers(HttpServletRequest request) {
-        return (Map<String, HttpSession>) request.getServletContext().getAttribute("loggedUsers");
-    }
-
-    private void setLoggedUsers(HttpServletRequest request, Map<String, HttpSession> loggedUsers) {
-        request.getServletContext().setAttribute("loggedUsers", loggedUsers);
     }
 }

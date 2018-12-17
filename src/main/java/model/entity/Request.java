@@ -4,7 +4,6 @@ public class Request {
     private int id;
     private int exhibitionId;
     private int userId;
-    private int paymentId;
 
     public int getId() {
         return id;
@@ -30,13 +29,6 @@ public class Request {
         this.userId = userId;
     }
 
-    public int getPaymentId() {
-        return paymentId;
-    }
-
-    public void setPaymentId(int paymentId) {
-        this.paymentId = paymentId;
-    }
 
     @Override
     public String toString() {
@@ -44,7 +36,6 @@ public class Request {
                 "id=" + id +
                 ", exhibitionId=" + exhibitionId +
                 ", userId=" + userId +
-                ", paymentId=" + paymentId +
                 '}';
     }
 }

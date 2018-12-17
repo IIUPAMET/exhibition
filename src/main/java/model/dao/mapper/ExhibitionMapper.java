@@ -12,8 +12,8 @@ public class ExhibitionMapper implements ObjectMapper<Exhibition> {
         Exhibition exhibition = new Exhibition();
         exhibition.setId(rs.getInt("id"));
         exhibition.setName(rs.getString("exhibition_name"));
-        exhibition.setEndDate(rs.getDate("end_date"));
-        exhibition.setStartDate(rs.getDate("start_date"));
+        exhibition.setEndDate(rs.getDate("end_date").toLocalDate());
+        exhibition.setStartDate(rs.getDate("start_date").toLocalDate());
         exhibition.setAuthor(rs.getString("author"));
         exhibition.setThema(rs.getString("thema"));
         return exhibition;

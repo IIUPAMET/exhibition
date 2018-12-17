@@ -31,17 +31,43 @@
             <div class="row">
                 <div class="col-lg-6">
                     <section class="panel">
-                        <div class="panel-body">col-lg-6</div>
+                        <header class="panel-heading">
+                            Advanced Table
+                        </header>
+
+                        <table class="table table-striped table-advance table-hover">
+                            <tbody>
+                            <tr>
+                                <th><i class="icon_profile"></i> id</th>
+                                <th><i class="icon_calendar"></i> Start Date</th>
+                                <th><i class="icon_mail_alt"></i> End Date</th>
+                                <th><i class="icon_pin_alt"></i> Name</th>
+                                <th><i class="icon_mobile"></i> Theme</th>
+                                <th><i class="icon_cogs"></i> Author</th>
+                                <th><i class="icon_cogs"></i> Action</th>
+                            </tr>
+                            <c:forEach items="${requestScope.exhibitions}" var="exhibition">
+                                <tr>
+                                    <td><c:out value="${exhibition.id}"/></td>
+                                    <td><c:out value="${exhibition.startDate}"/></td>
+                                    <td><c:out value="${exhibition.endDate}"/></td>
+                                    <td><c:out value="${exhibition.name}"/></td>
+                                    <td><c:out value="${exhibition.thema}"/></td>
+                                    <td><c:out value="${exhibition.author}"/></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-primary" href="#"><i class="icon_plus_alt2"></i></a>
+                                            <a class="btn btn-success" href="#"><i class="icon_check_alt2"></i></a>
+                                            <a class="btn btn-danger" href="#"><i class="icon_close_alt2"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
                     </section>
                 </div>
                 <div class="col-lg-6">
-                    <section class="panel">
-                        <div class="panel-body">col-lg-6</div>
-                    </section>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
                             Advanced Table
@@ -83,14 +109,14 @@
             <c:if test="${sessionScope.user.role == ('USER')}">
                 <p>This will be displayed only if the user has the role "admin".</p>
                 <button class="btn btn-info btn-lg btn-block"
-                        formaction="${pageContext.request.contextPath}/exhib/user/user" type="submit">
+                        href="${pageContext.request.contextPath}/exhib/admin/create_exhibition" type="submit">
                     Start as USER
                 </button>
             </c:if>
             <c:if test="${sessionScope.user.role == 'ADMIN'}">
                 <p>This will be displayed only if the user has the role "admin".</p>
                 <button class="btn btn-info btn-lg btn-block"
-                        formaction="${pageContext.request.contextPath}/exhib/admin/createexhibition" type="submit">
+                        href="${pageContext.request.contextPath}/exhib/admin/createexhibition" type="submit">
                     Start as ADMIN
                 </button>
                 <a href="${pageContext.request.contextPath}/exhib/admin/createexhibition">aa</a>

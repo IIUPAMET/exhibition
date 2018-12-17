@@ -21,10 +21,10 @@ public class SingUpCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
 
-        Map<String, String> fieldsMap = new ConcurrentHashMap<>();
         if (request.getParameter("login") == null) {
             return "/singup.jsp";
         }
+        Map<String, String> fieldsMap = new ConcurrentHashMap<>();
         fieldsMap.put("login", request.getParameter("login"));
         fieldsMap.put("pass", request.getParameter("pass"));
         fieldsMap.put("repeatpass", request.getParameter("repeatpass"));
