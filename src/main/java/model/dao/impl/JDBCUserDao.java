@@ -79,6 +79,17 @@ public class JDBCUserDao implements UserDao {
     }
 
     @Override
+    public void addwish(Integer user_id, Integer exhib_id) {
+        try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.addwish"))) {
+            ps.setInt(1, user_id);
+            ps.setInt(2, exhib_id);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void close() {
         try {
             connection.close();

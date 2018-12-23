@@ -14,7 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CreateExhibitionCommand implements Command{
 
-    private ExhibitionService exhibitionService = new ExhibitionSeviceImpl();
+    private ExhibitionService exhibitionService;
+
+    public CreateExhibitionCommand(ExhibitionService exhibitionService) {
+        this.exhibitionService = exhibitionService;
+    }
 
     @Override
     public String execute(HttpServletRequest request) {
@@ -26,12 +30,13 @@ public class CreateExhibitionCommand implements Command{
         fieldsMap.put("theme", request.getParameter("theme"));
         fieldsMap.put("author", request.getParameter("author"));
         // TO DO
-            exhibitionService.crateExhibition(request.getParameter("exhibition_name"),
-                    LocalDate.parse(request.getParameter("start_date"),formatter),
-                    LocalDate.parse(request.getParameter("end_date"),formatter),
-                    request.getParameter("theme"),
-                    request.getParameter("author")
-                    );
+        exhibitionService.exhibitionWithTickets(request.getParameter("exhibition_name"),
+                LocalDate.parse(request.getParameter("start_date"),formatter),
+                LocalDate.parse(request.getParameter("end_date"),formatter),
+                request.getParameter("theme"),
+                request.getParameter("author"),
+                Integer.parseInt(request.getParameter("numoftickets"))
+        );
 
         return "redirect: home";
     }

@@ -1,5 +1,6 @@
 package model.dao.impl;
 
+import com.mysql.jdbc.Statement;
 import model.dao.ExhibitionDao;
 import model.dao.mapper.ExhibitionMapper;
 import model.entity.Exhibition;
@@ -39,6 +40,36 @@ public class JDBCExhibitionDao implements ExhibitionDao {
     public void crateExhibition(String name, LocalDate start, LocalDate end, String theme, String author, String description){
 
     }
+
+    @Override
+    public void exhibitionWithTickets(Exhibition entity, Integer numOfTickets) {
+        try (PreparedStatement psExhibition = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"), Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement psTicket = connection.prepareStatement(QueryBundle.getProperty("insert.ticket"));
+        ) {
+            psExhibition.setString(1, entity.getName());
+            psExhibition.setDate(2, java.sql.Date.valueOf(entity.getStartDate()));
+            psExhibition.setDate(3, java.sql.Date.valueOf(entity.getEndDate()));
+            psExhibition.setString(4, entity.getThema());
+            psExhibition.setString(5, entity.getAuthor());
+            psExhibition.executeUpdate();
+            try (ResultSet generatedKeys = psExhibition.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    entity.setId(generatedKeys.getInt(1));
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+            for(int i=0; i < numOfTickets; i++){
+                psTicket.setInt(1, entity.getId());
+                psTicket.addBatch();
+            }
+            psTicket.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public Exhibition findById(int id) {
         Exhibition result = new Exhibition();

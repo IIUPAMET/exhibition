@@ -56,23 +56,36 @@
                                 <th><i class="icon_pin_alt"></i> Name</th>
                                 <th><i class="icon_mobile"></i> Theme</th>
                                 <th><i class="icon_cogs"></i> Author</th>
+<c:if test="${sessionScope.user.role == ('USER')}">
                                 <th><i class="icon_cogs"></i> Action</th>
+</c:if>
                             </tr>
                             <c:forEach items="${requestScope.exhibitions}" var="exhibition">
                                 <tr>
-                                    <td><c:out value="${exhibition.id}"/></td>
-                                    <td><c:out value="${exhibition.startDate}"/></td>
-                                    <td><c:out value="${exhibition.endDate}"/></td>
-                                    <td><c:out value="${exhibition.name}"/></td>
-                                    <td><c:out value="${exhibition.thema}"/></td>
-                                    <td><c:out value="${exhibition.author}"/></td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a class="btn btn-primary" href="#"><i class="icon_plus_alt2"></i></a>
-                                            <a class="btn btn-success" href="#"><i class="icon_check_alt2"></i></a>
-                                            <a class="btn btn-danger" href="#"><i class="icon_close_alt2"></i></a>
-                                        </div>
-                                    </td>
+                                    <form method="get" action="${pageContext.request.contextPath}/exhib/user/addwish">
+                                        <td><c:out value="${exhibition.id}"/></td>
+                                        <td><c:out value="${exhibition.startDate}"/></td>
+                                        <td><c:out value="${exhibition.endDate}"/></td>
+                                        <td><c:out value="${exhibition.name}"/></td>
+                                        <td><c:out value="${exhibition.thema}"/></td>
+                                        <td><c:out value="${exhibition.author}"/></td>
+
+                                        <c:if test="${sessionScope.user.role == ('USER')}">
+                                        <td>
+                                            <button type="submit" name="addwish" value="${exhibition.id}">add</button>
+                                        </td>
+                                        </c:if>
+
+                                        <c:if test="${sessionScope.user.role == 'ADMIN'}">
+                                        <td>
+                                            <div class="btn-group">
+                                                <a class="btn btn-primary" href="#"><i class="icon_plus_alt2"></i></a>
+                                                <a class="btn btn-success" href="#"><i class="icon_check_alt2"></i></a>
+                                                <a class="btn btn-danger" href="#"><i class="icon_close_alt2"></i></a>
+                                            </div>
+                                        </td>
+                                        </c:if>
+                                    </form>
                                 </tr>
                             </c:forEach>
                             </tbody>
@@ -81,19 +94,12 @@
                 </div>
             </div>
             <c:if test="${sessionScope.user.role == ('USER')}">
-                <p>This will be displayed only if the user has the role "admin".</p>
-                <button class="btn btn-info btn-lg btn-block"
-                        formaction="${pageContext.request.contextPath}/exhib/user/user" type="submit">
-                    Start as USER
-                </button>
+                <p>This will be displayed only if the user has the role "USER".</p>
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/exhib/user/user" title="Bootstrap 3 themes generator">Primary</a></td>
             </c:if>
             <c:if test="${sessionScope.user.role == 'ADMIN'}">
-                <p>This will be displayed only if the user has the role "admin".</p>
-                <button class="btn btn-info btn-lg btn-block"
-                        formaction="${pageContext.request.contextPath}/exhib/admin/createexhibition" type="submit">
-                    Start as ADMIN
-                </button>
-                <a href="${pageContext.request.contextPath}/exhib/admin/createexhibition">aa</a>
+                <p>This will be displayed only if the user has the role "ADMIN".</p>
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/exhib/admin/createexhibition" title="Bootstrap 3 themes generator">Primary</a></td>
             </c:if>
         </section>
     </section>

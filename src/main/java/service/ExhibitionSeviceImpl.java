@@ -32,4 +32,17 @@ public class ExhibitionSeviceImpl implements ExhibitionService {
             dao.create(exhibition);
         }
     }
+
+    @Override
+    public void exhibitionWithTickets(String name, LocalDate start, LocalDate end, String theme, String author, Integer numOfTickets) {
+        Exhibition exhibition = new Exhibition();
+        exhibition.setName(name);
+        exhibition.setEndDate(end);
+        exhibition.setStartDate(start);
+        exhibition.setAuthor(author);
+        exhibition.setThema(theme);
+        try (ExhibitionDao dao = daoFactory.createExhibitionDao()) {
+            dao.exhibitionWithTickets(exhibition, numOfTickets);
+        }
+    }
 }

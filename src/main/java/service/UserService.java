@@ -15,4 +15,5 @@ public interface UserService {
 
     User create(String login, String pass, String ukrname, String engname, String email);
 
+    void addwish(Integer user_id, Integer exhib_id);
 }

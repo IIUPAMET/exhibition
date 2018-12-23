@@ -28,14 +28,14 @@
                             <input type="text" class="form-control" placeholder="Exhibition Name" name="exhibition_name">
                         </div>
 
-                        <label class="control-label col-sm-4">Start Date</label>
-                        <div class="col-sm-6">
+                        <label class="col-sm-2 control-label">Start Date</label>
+                        <div class="col-sm-10">
                             <input id="dp1" type="text" value="28-10-2013" size="16" class="form-control"
                                    name="start_date">
                         </div>
 
-                        <label class="control-label col-sm-4">End Date</label>
-                        <div class="col-sm-6">
+                        <label class="col-sm-2 control-label">End Date</label>
+                        <div class="col-sm-10">
                             <input id="dp2" type="text" value="28-10-2013" size="16" class="form-control"
                                    name="end_date">
                         </div>
@@ -48,6 +48,11 @@
                         <label class="col-sm-2 control-label">Exhibition Author</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" placeholder="Exhibition Author" name="author">
+                        </div>
+
+                        <label class="col-sm-2 control-label">Exhibition numOfTickets</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="numOfTickets" name="numoftickets">
                         </div>
 
                         <label class="control-label col-sm-2">Description</label>

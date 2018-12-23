@@ -6,16 +6,16 @@ import service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static controller.ServletUtil.getLoggedUsers;
 
 public class LoginCommand implements Command {
 
     private UserService userService = new UserServiceImpl();
+
+    public LoginCommand(UserService userService){
+        this.userService = userService;
+    }
 
     @Override
     public String execute(HttpServletRequest request) {

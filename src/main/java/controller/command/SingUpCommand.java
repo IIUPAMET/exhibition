@@ -16,7 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SingUpCommand implements Command {
 
-    private UserService userService = new UserServiceImpl();
+    private UserService userService;
+
+    public SingUpCommand(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public String execute(HttpServletRequest request) {

@@ -50,5 +50,12 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public void addwish(Integer user_id, Integer exhib_id) {
+        try (UserDao userDao = daoFactory.createUserDao()) {
+            userDao.addwish(user_id, exhib_id);
+        }
+    }
+
 
 }

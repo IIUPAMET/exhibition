@@ -46,7 +46,13 @@
             <!-- notificatoin dropdown start-->
             <ul class="nav pull-right top-menu">
                 <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="username"><fmt:message key="input.login"/></span>
+                        <b class="caret"></b>
+                    </a>
                     <ul class="dropdown-menu extended notification">
+
+                        <div class="log-arrow-up"></div>
                         <li>
                             <a href="?sessionLocale=en"><fmt:message key="lang.en"/></a></li>
                         <li>

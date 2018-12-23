@@ -2,6 +2,11 @@ package controller;
 
 
 import controller.command.*;
+import di.CommandModule;
+import service.ExhibitionService;
+import service.ExhibitionSeviceImpl;
+import service.UserService;
+import service.UserServiceImpl;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -25,14 +30,15 @@ public class Servlet extends HttpServlet {
         servletConfig.getServletContext()
                 .setAttribute("loggedUsers", new ConcurrentHashMap<String, HttpSession>());
 
-        commands.put("home", new HomePageCommand());
-        commands.put("admin/createexhibition", new CreateExhibitionPageCommand());
-        commands.put("admin/create", new CreateExhibitionCommand());
-        commands.put("index", new IndexPageCommand());
-        commands.put("login", new LoginCommand());
-        commands.put("logout", new LogOutCommand());
-        commands.put("singup", new SingUpCommand());
-        commands.put("user/user", new UserPageCommand());
+        commands.put("home",  CommandModule.getInstance().getHomePageCommand());
+        commands.put("admin/createexhibition", CommandModule.getInstance().getCreateExhibitionPageCommand());
+        commands.put("admin/create", CommandModule.getInstance().getCreateExhibitionCommand());
+        commands.put("index", CommandModule.getInstance().getIndexPageCommand());
+        commands.put("login",  CommandModule.getInstance().getLoginCommand());
+        commands.put("logout", CommandModule.getInstance().getLogOutCommand());
+        commands.put("singup",  CommandModule.getInstance().getSingUpCommand());
+        commands.put("user/user", CommandModule.getInstance().getUserPageCommand());
+        commands.put("user/addwish",  CommandModule.getInstance().getAddWishCommand());
 
     }
 
