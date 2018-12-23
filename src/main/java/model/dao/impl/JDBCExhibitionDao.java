@@ -6,26 +6,27 @@ import model.dao.mapper.ExhibitionMapper;
 import model.entity.Exhibition;
 import util.QueryBundle;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class JDBCExhibitionDao implements ExhibitionDao {
-    private Connection connection;
+    private DataSource dataSource;
 
-    public JDBCExhibitionDao(Connection connection){
-        this.connection = connection;
+    public JDBCExhibitionDao(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 
 
     @Override
     public void create(Exhibition entity) {
-        try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"))) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"))) {
             ps.setString(1, entity.getName());
             ps.setDate(2, java.sql.Date.valueOf(entity.getStartDate()));
             ps.setDate(3, java.sql.Date.valueOf(entity.getEndDate()));
@@ -43,7 +44,8 @@ public class JDBCExhibitionDao implements ExhibitionDao {
 
     @Override
     public void exhibitionWithTickets(Exhibition entity, Integer numOfTickets) {
-        try (PreparedStatement psExhibition = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"), Statement.RETURN_GENERATED_KEYS);
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement psExhibition = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"), Statement.RETURN_GENERATED_KEYS);
              PreparedStatement psTicket = connection.prepareStatement(QueryBundle.getProperty("insert.ticket"));
         ) {
             psExhibition.setString(1, entity.getName());
@@ -73,7 +75,8 @@ public class JDBCExhibitionDao implements ExhibitionDao {
     @Override
     public Exhibition findById(int id) {
         Exhibition result = new Exhibition();
-        try(PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
             ResultSet rs = ps.executeQuery();
             ExhibitionMapper mapper = new ExhibitionMapper();
             if (rs.next()) {
@@ -88,7 +91,8 @@ public class JDBCExhibitionDao implements ExhibitionDao {
     @Override
     public List<Exhibition> findAll() {
         List<Exhibition> result = new ArrayList<>();
-        try(PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
             ResultSet rs = ps.executeQuery();
             ExhibitionMapper mapper = new ExhibitionMapper();
             while (rs.next()) {
@@ -107,11 +111,6 @@ public class JDBCExhibitionDao implements ExhibitionDao {
 
     @Override
     public void delete(int id) {
-
-    }
-
-    @Override
-    public void close() {
 
     }
 }

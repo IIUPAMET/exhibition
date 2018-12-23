@@ -6,19 +6,20 @@ import javax.sql.DataSource;
 
 public class ConnectionPoolHolder {
     private static volatile DataSource dataSource;
-    public static DataSource getDataSource(){
 
-        if (dataSource == null){
+    public static DataSource getDataSource() {
+
+        if (dataSource == null) {
             synchronized (ConnectionPoolHolder.class) {
                 if (dataSource == null) {
                     BasicDataSource ds = new BasicDataSource();
                     ds.setDriverClassName("com.mysql.jdbc.Driver");
-                    ds.setUrl("jdbc:mysql://localhost:3306/exhibition_db"+
-                            "?verifyServerCertificate=false"+
-                            "&useSSL=false"+
-                            "&requireSSL=false"+
-                            "&useLegacyDatetimeCode=false"+
-                            "&amp"+
+                    ds.setUrl("jdbc:mysql://localhost:3306/exhibition_db" +
+                            "?verifyServerCertificate=false" +
+                            "&useSSL=false" +
+                            "&requireSSL=false" +
+                            "&useLegacyDatetimeCode=false" +
+                            "&amp" +
                             "&serverTimezone=UTC");
                     ds.setUsername("root");
                     ds.setPassword("root");
@@ -30,8 +31,6 @@ public class ConnectionPoolHolder {
             }
         }
         return dataSource;
-
     }
-
 
 }

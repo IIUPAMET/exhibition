@@ -9,29 +9,27 @@ import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
 
-    private DaoFactory daoFactory = JDBCDaoFactory.getInstance();
+    private UserDao userDao;
+
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
     public List<User> getAllUsers() {
-        try (UserDao dao = daoFactory.createUserDao()) {
-            return dao.findAll();
-        }
+            return userDao.findAll();
     }
 
     @Override
     public Optional<User> login(String login, String pass) {
         Optional<User> result; //= Optional.empty();
-        try (UserDao userDao = daoFactory.createUserDao()) {
             result = userDao.login(login, pass);
-        }
         return result;
     }
 
     @Override
     public User create(User user) {
-        try (UserDao userDao = daoFactory.createUserDao()) {
             userDao.create(user);
-        }
         return null;
     }
 
@@ -44,17 +42,14 @@ public class UserServiceImpl implements UserService {
         user.setNameEN(engname);
         user.setNameUA(ukrname);
         user.setRole(User.Role.USER);
-        try (UserDao userDao = daoFactory.createUserDao()) {
             userDao.create(user);
-        }
         return null;
     }
 
     @Override
     public void addwish(Integer user_id, Integer exhib_id) {
-        try (UserDao userDao = daoFactory.createUserDao()) {
             userDao.addwish(user_id, exhib_id);
-        }
+
     }
 
 

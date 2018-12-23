@@ -5,20 +5,22 @@ import model.dao.mapper.UserMapper;
 import model.entity.User;
 import util.QueryBundle;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
 public class JDBCUserDao implements UserDao {
-    private Connection connection;
+    private DataSource dataSource;
 
-    public JDBCUserDao(Connection connection){
-        this.connection = connection;
+    public JDBCUserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public void create(User entity) {
-        try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.user"))) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.user"))) {
             ps.setString(1, entity.getLogin());
             ps.setString(2, entity.getPass());
             ps.setString(3, entity.getMail());
@@ -35,7 +37,8 @@ public class JDBCUserDao implements UserDao {
     public User findById(int id) {
         User result = new User();
         UserMapper mapper = new UserMapper();
-        try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.user.byId"))) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.user.byId"))) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -61,11 +64,13 @@ public class JDBCUserDao implements UserDao {
     public void delete(int id) {
 
     }
+
     @Override
     public Optional<User> login(String login, String pass) {
         Optional<User> result = Optional.empty();
         UserMapper mapper = new UserMapper();
-        try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.user.login"))) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.user.login"))) {
             ps.setString(1, login);
             ps.setString(2, pass);
             ResultSet rs = ps.executeQuery();
@@ -80,21 +85,13 @@ public class JDBCUserDao implements UserDao {
 
     @Override
     public void addwish(Integer user_id, Integer exhib_id) {
-        try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.addwish"))) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.addwish"))) {
             ps.setInt(1, user_id);
             ps.setInt(2, exhib_id);
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void close() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 }

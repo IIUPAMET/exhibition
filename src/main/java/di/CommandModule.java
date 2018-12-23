@@ -1,10 +1,17 @@
 package di;
 
 import controller.command.*;
+import model.dao.ExhibitionDao;
+import model.dao.UserDao;
+import model.dao.impl.ConnectionPoolHolder;
+import model.dao.impl.JDBCExhibitionDao;
+import model.dao.impl.JDBCUserDao;
 import service.ExhibitionService;
 import service.ExhibitionSeviceImpl;
 import service.UserService;
 import service.UserServiceImpl;
+
+import javax.sql.DataSource;
 
 public class CommandModule {
     private static CommandModule instance = new CommandModule();
@@ -14,6 +21,8 @@ public class CommandModule {
     }
 
     //DAO
+    private ExhibitionDao exhibitionDao;
+    private UserDao userDao;
 
     //Services
     private UserService userService;
@@ -32,8 +41,13 @@ public class CommandModule {
 
 
     private CommandModule() {
-        userService = new UserServiceImpl();
-        exhibitionService = new ExhibitionSeviceImpl();
+        DataSource dataSource = ConnectionPoolHolder.getDataSource();
+
+        exhibitionDao = new JDBCExhibitionDao(dataSource);
+        userDao = new JDBCUserDao(dataSource);
+
+        userService = new UserServiceImpl(userDao);
+        exhibitionService = new ExhibitionSeviceImpl(exhibitionDao);
 
         addWishCommand = new AddWishCommand(userService);
         createExhibitionCommand = new CreateExhibitionCommand(exhibitionService);
@@ -43,7 +57,7 @@ public class CommandModule {
         createExhibitionPageCommand = new CreateExhibitionPageCommand();
         indexPageCommand = new IndexPageCommand();
         logOutCommand = new LogOutCommand();
-        userPageCommand = new UserPageCommand();
+        userPageCommand = new UserPageCommand(exhibitionService);
     }
 
     public CreateExhibitionPageCommand getCreateExhibitionPageCommand() {

@@ -1,23 +1,20 @@
 package service;
 
 import model.dao.ExhibitionDao;
-import model.dao.impl.DaoFactory;
-import model.dao.impl.JDBCDaoFactory;
 import model.entity.Exhibition;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public class ExhibitionSeviceImpl implements ExhibitionService {
-
-    private DaoFactory daoFactory = JDBCDaoFactory.getInstance();
+    ExhibitionDao exhibitionDao;
+    public ExhibitionSeviceImpl(ExhibitionDao exhibitionDao) {
+        this.exhibitionDao = exhibitionDao;
+    }
 
     @Override
     public List<Exhibition> getAll() {
-        try (ExhibitionDao dao = daoFactory.createExhibitionDao()) {
-        return dao.findAll();
-    }
+        return exhibitionDao.findAll();
     }
     @Override
     public void crateExhibition(String name, LocalDate start, LocalDate end, String theme, String author){
@@ -28,9 +25,7 @@ public class ExhibitionSeviceImpl implements ExhibitionService {
         exhibition.setStartDate(start);
         exhibition.setAuthor(author);
         exhibition.setThema(theme);
-        try (ExhibitionDao dao = daoFactory.createExhibitionDao()) {
-            dao.create(exhibition);
-        }
+            exhibitionDao.create(exhibition);
     }
 
     @Override
@@ -41,8 +36,6 @@ public class ExhibitionSeviceImpl implements ExhibitionService {
         exhibition.setStartDate(start);
         exhibition.setAuthor(author);
         exhibition.setThema(theme);
-        try (ExhibitionDao dao = daoFactory.createExhibitionDao()) {
-            dao.exhibitionWithTickets(exhibition, numOfTickets);
-        }
+            exhibitionDao.exhibitionWithTickets(exhibition, numOfTickets);
     }
 }

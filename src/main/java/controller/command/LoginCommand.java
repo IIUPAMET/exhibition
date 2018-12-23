@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class LoginCommand implements Command {
 
-    private UserService userService = new UserServiceImpl();
+    private UserService userService;
 
     public LoginCommand(UserService userService){
         this.userService = userService;
