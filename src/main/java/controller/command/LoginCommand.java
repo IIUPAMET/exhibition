@@ -21,7 +21,6 @@ public class LoginCommand implements Command {
     public String execute(HttpServletRequest request) {
 
         if(request.getSession().getAttribute("user") != null){
-
             return "redirect: logout";
         }
 

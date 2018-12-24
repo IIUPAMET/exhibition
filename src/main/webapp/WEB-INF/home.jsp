@@ -16,6 +16,7 @@
 <!-- container section start -->
 <section id="container" class="">
     <%@include file="/WEB-INF/header.jsp" %>
+
     <section id="main-content">
         <section class="wrapper">
             <div class="row">
@@ -31,7 +32,9 @@
             <div class="row">
                 <div class="col-lg-6">
                     <section class="panel">
-                        <div class="panel-body">col-lg-6</div>
+                        <div class="panel-body">
+
+                        </div>
                     </section>
                 </div>
                 <div class="col-lg-6">
@@ -56,9 +59,9 @@
                                 <th><i class="icon_pin_alt"></i> Name</th>
                                 <th><i class="icon_mobile"></i> Theme</th>
                                 <th><i class="icon_cogs"></i> Author</th>
-<c:if test="${sessionScope.user.role == ('USER')}">
-                                <th><i class="icon_cogs"></i> Action</th>
-</c:if>
+                                <c:if test="${sessionScope.user.role == ('USER')}">
+                                    <th><i class="icon_cogs"></i> Action</th>
+                                </c:if>
                             </tr>
                             <c:forEach items="${requestScope.exhibitions}" var="exhibition">
                                 <tr>
@@ -71,19 +74,32 @@
                                         <td><c:out value="${exhibition.author}"/></td>
 
                                         <c:if test="${sessionScope.user.role == ('USER')}">
-                                        <td>
-                                            <button type="submit" name="addwish" value="${exhibition.id}">add</button>
-                                        </td>
+                                            <c:choose>
+                                                <c:when test="${exhibition.id eq wishlist[exhibition.id]}">
+                                                    <td>
+                                                        buying
+                                                    </td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td>
+                                                        <button type="submit" name="addwish" value="${exhibition.id}">
+                                                            add
+                                                        </button>
+                                                    </td>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </c:if>
 
                                         <c:if test="${sessionScope.user.role == 'ADMIN'}">
-                                        <td>
-                                            <div class="btn-group">
-                                                <a class="btn btn-primary" href="#"><i class="icon_plus_alt2"></i></a>
-                                                <a class="btn btn-success" href="#"><i class="icon_check_alt2"></i></a>
-                                                <a class="btn btn-danger" href="#"><i class="icon_close_alt2"></i></a>
-                                            </div>
-                                        </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-primary" href="#"><i
+                                                            class="icon_plus_alt2"></i></a>
+                                                    <a class="btn btn-success" href="#"><i class="icon_check_alt2"></i></a>
+                                                    <a class="btn btn-danger" href="#"><i
+                                                            class="icon_close_alt2"></i></a>
+                                                </div>
+                                            </td>
                                         </c:if>
                                     </form>
                                 </tr>
@@ -95,16 +111,17 @@
             </div>
             <c:if test="${sessionScope.user.role == ('USER')}">
                 <p>This will be displayed only if the user has the role "USER".</p>
-                <a class="btn btn-primary" href="${pageContext.request.contextPath}/exhib/user/user" title="Bootstrap 3 themes generator">Primary</a></td>
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/exhib/user/user"
+                   title="Bootstrap 3 themes generator">Primary</a></td>
             </c:if>
             <c:if test="${sessionScope.user.role == 'ADMIN'}">
                 <p>This will be displayed only if the user has the role "ADMIN".</p>
-                <a class="btn btn-primary" href="${pageContext.request.contextPath}/exhib/admin/createexhibition" title="Bootstrap 3 themes generator">Primary</a></td>
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/exhib/admin/createexhibition"
+                   title="Bootstrap 3 themes generator">Primary</a></td>
             </c:if>
         </section>
     </section>
 
 </section>
-
 </body>
 </html>

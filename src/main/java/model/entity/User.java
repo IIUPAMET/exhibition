@@ -1,7 +1,7 @@
 package model.entity;
 
 public class User {
-    private int id;
+    private Integer id;
     private String login;
     private String pass;
     private String nameUA;
@@ -33,11 +33,11 @@ public class User {
         this.role = role;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

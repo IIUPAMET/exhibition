@@ -3,10 +3,7 @@ package controller;
 
 import controller.command.*;
 import di.CommandModule;
-import service.ExhibitionService;
-import service.ExhibitionSeviceImpl;
-import service.UserService;
-import service.UserServiceImpl;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -23,10 +20,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @WebServlet("/exhib/*")
 public class Servlet extends HttpServlet {
+
+    // Инициализация логера
+    private static final Logger log = Logger.getLogger(Servlet.class);
     private Map<String, Command> commands = new HashMap<>();
 
 
     public void init(ServletConfig servletConfig){
+
+        log.info("Это информационное сообщение!");
         servletConfig.getServletContext()
                 .setAttribute("loggedUsers", new ConcurrentHashMap<String, HttpSession>());
 
@@ -52,6 +54,7 @@ public class Servlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        log.info("Это информационное сообщение!");
 
         Command command = getCommand(request);
         String page = null;
@@ -72,6 +75,6 @@ public class Servlet extends HttpServlet {
         String path = request.getRequestURI();
         path = path.replaceAll(".*/exhib/" , "");
 
-        return commands.getOrDefault(path, (r)-> "/index.jsp");
+        return commands.getOrDefault(path, (r)-> "redirect: index");
     }
 }
