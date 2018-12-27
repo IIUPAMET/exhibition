@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface ExhibitionService {
+
+    List<Exhibition> getExhibitionForUser(Integer userId);
     List<Exhibition> getAll();
     public void crateExhibition(String name, LocalDate start, LocalDate end, String theme, String author);
     public void exhibitionWithTickets(String name, LocalDate start, LocalDate end, String theme, String author, Integer numOfTickets);

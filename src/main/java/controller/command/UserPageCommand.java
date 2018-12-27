@@ -1,5 +1,6 @@
 package controller.command;
 
+import model.entity.User;
 import service.ExhibitionService;
 import service.ExhibitionSeviceImpl;
 
@@ -15,7 +16,9 @@ public class UserPageCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) throws ParseException {
-        request.setAttribute("exhibitions", exhibitionService.getAll());
+        Integer userId = ((User)request.getSession().getAttribute("user")).getId();
+        request.setAttribute("exhibitions", exhibitionService.getExhibitionForUser(userId));
+
         return "/WEB-INF/user/user.jsp";
     }
 }

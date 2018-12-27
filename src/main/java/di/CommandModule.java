@@ -3,11 +3,9 @@ package di;
 import controller.command.*;
 import model.dao.ExhibitionDao;
 import model.dao.RequestDao;
+import model.dao.TicketDao;
 import model.dao.UserDao;
-import model.dao.impl.ConnectionPoolHolder;
-import model.dao.impl.JDBCExhibitionDao;
-import model.dao.impl.JDBCRequestDao;
-import model.dao.impl.JDBCUserDao;
+import model.dao.impl.*;
 import service.*;
 
 import javax.sql.DataSource;
@@ -23,11 +21,13 @@ public class CommandModule {
     private ExhibitionDao exhibitionDao;
     private UserDao userDao;
     private RequestDao requestDao;
+    private TicketDao ticketDao;
 
     //Services
     private UserService userService;
     private ExhibitionService exhibitionService;
     private RequestService requestService;
+    private TicketService ticketService;
 
     //Commands
     private AddWishCommand addWishCommand;
@@ -39,6 +39,7 @@ public class CommandModule {
     private IndexPageCommand indexPageCommand;
     private LogOutCommand logOutCommand;
     private UserPageCommand userPageCommand;
+    private BuyTicketCommand buyTicketCommand;
 
 
     private CommandModule() {
@@ -47,10 +48,12 @@ public class CommandModule {
         exhibitionDao = new JDBCExhibitionDao(dataSource);
         userDao = new JDBCUserDao(dataSource);
         requestDao = new JDBCRequestDao(dataSource);
+        ticketDao = new JDBCTicketDao(dataSource);
 
         userService = new UserServiceImpl(userDao);
         exhibitionService = new ExhibitionSeviceImpl(exhibitionDao);
         requestService = new RequestService(requestDao);
+        ticketService = new TicketService(ticketDao);
 
         addWishCommand = new AddWishCommand(userService);
         createExhibitionCommand = new CreateExhibitionCommand(exhibitionService);
@@ -61,6 +64,7 @@ public class CommandModule {
         indexPageCommand = new IndexPageCommand();
         logOutCommand = new LogOutCommand();
         userPageCommand = new UserPageCommand(exhibitionService);
+        buyTicketCommand = new BuyTicketCommand(ticketService);
     }
 
     public CreateExhibitionPageCommand getCreateExhibitionPageCommand() {
@@ -97,5 +101,9 @@ public class CommandModule {
 
     public AddWishCommand getAddWishCommand() {
         return addWishCommand;
+    }
+
+    public BuyTicketCommand getBuyTicketCommand() {
+        return buyTicketCommand;
     }
 }

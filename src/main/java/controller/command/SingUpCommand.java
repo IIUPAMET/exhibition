@@ -44,7 +44,7 @@ public class SingUpCommand implements Command {
                     fieldsMap.get("ukrname"),
                     fieldsMap.get("engname"),
                     fieldsMap.get("email"));
-            return "redirect: login";
+            return "redirect: index";
         } else {
             request.setAttribute("incorrectMap", uncorectMap);
             request.setAttribute("ukrname", request.getParameter("ukrname"));

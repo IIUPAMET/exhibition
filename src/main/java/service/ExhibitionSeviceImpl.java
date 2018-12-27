@@ -16,6 +16,11 @@ public class ExhibitionSeviceImpl implements ExhibitionService {
     public List<Exhibition> getAll() {
         return exhibitionDao.findAll();
     }
+
+    public List<Exhibition> getExhibitionForUser(Integer userId){
+        return exhibitionDao.getExhibitionForUser(userId);
+    }
+
     @Override
     public void crateExhibition(String name, LocalDate start, LocalDate end, String theme, String author){
 

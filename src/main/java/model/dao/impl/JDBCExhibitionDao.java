@@ -48,6 +48,8 @@ public class JDBCExhibitionDao implements ExhibitionDao {
              PreparedStatement psExhibition = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"), Statement.RETURN_GENERATED_KEYS);
              PreparedStatement psTicket = connection.prepareStatement(QueryBundle.getProperty("insert.ticket"));
         ) {
+            connection.setAutoCommit(false);
+            connection.setTransactionIsolation(8);
             psExhibition.setString(1, entity.getName());
             psExhibition.setDate(2, java.sql.Date.valueOf(entity.getStartDate()));
             psExhibition.setDate(3, java.sql.Date.valueOf(entity.getEndDate()));
@@ -66,8 +68,13 @@ public class JDBCExhibitionDao implements ExhibitionDao {
                 psTicket.setInt(1, entity.getId());
                 psTicket.addBatch();
             }
+
+            Thread.sleep(30000);
             psTicket.executeBatch();
+            connection.commit();
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -81,6 +88,21 @@ public class JDBCExhibitionDao implements ExhibitionDao {
             ExhibitionMapper mapper = new ExhibitionMapper();
             if (rs.next()) {
                 result = mapper.extractFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public List<Exhibition> getExhibitionForUser(Integer userId){
+        List<Exhibition> result = new ArrayList<>();
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.for.user"))) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            ExhibitionMapper mapper = new ExhibitionMapper();
+            while (rs.next()) {
+                result.add(mapper.extractFromResultSet(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();

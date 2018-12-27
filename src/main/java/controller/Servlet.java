@@ -27,7 +27,7 @@ public class Servlet extends HttpServlet {
 
 
     public void init(ServletConfig servletConfig){
-
+        log.debug("asas" + new Object().toString() + " ");
         log.info("Это информационное сообщение!");
         servletConfig.getServletContext()
                 .setAttribute("loggedUsers", new ConcurrentHashMap<String, HttpSession>());
@@ -41,6 +41,7 @@ public class Servlet extends HttpServlet {
         commands.put("singup",  CommandModule.getInstance().getSingUpCommand());
         commands.put("user/user", CommandModule.getInstance().getUserPageCommand());
         commands.put("user/addwish",  CommandModule.getInstance().getAddWishCommand());
+        commands.put("user/buyticket", CommandModule.getInstance().getBuyTicketCommand());
 
     }
 
