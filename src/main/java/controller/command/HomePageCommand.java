@@ -24,8 +24,16 @@ public class HomePageCommand implements Command {
 
             userId = ((User)request.getSession().getAttribute("user")).getId();
         }
+        int page = 1;
+        int recordsPerPage = 2;
+        if(request.getParameter("page") != null)
+            page = Integer.parseInt(request.getParameter("page"));
+        int noOfRecords = 9;
+        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
         request.setAttribute("wishlist", requestService.getWithListByUserId(userId));
-        request.setAttribute("exhibitions", exhibitionService.getAll());
+        request.setAttribute("exhibitions", exhibitionService.viewAllExhibition((page-1)*recordsPerPage, recordsPerPage));
+        request.setAttribute("noOfPages", noOfPages);
+        request.setAttribute("currentPage", page);
         return "/WEB-INF/home.jsp";
     }
 }

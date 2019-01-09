@@ -18,7 +18,9 @@ import java.util.List;
 public class JDBCExhibitionDao implements ExhibitionDao {
     private DataSource dataSource;
 
-    public JDBCExhibitionDao(DataSource dataSource){
+    private int noOfRecords;
+
+    public JDBCExhibitionDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -37,8 +39,9 @@ public class JDBCExhibitionDao implements ExhibitionDao {
             e.printStackTrace();
         }
     }
+
     @Override
-    public void crateExhibition(String name, LocalDate start, LocalDate end, String theme, String author, String description){
+    public void crateExhibition(String name, LocalDate start, LocalDate end, String theme, String author, String description) {
 
     }
 
@@ -59,12 +62,11 @@ public class JDBCExhibitionDao implements ExhibitionDao {
             try (ResultSet generatedKeys = psExhibition.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     entity.setId(generatedKeys.getInt(1));
-                }
-                else {
+                } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
             }
-            for(int i=0; i < numOfTickets; i++){
+            for (int i = 0; i < numOfTickets; i++) {
                 psTicket.setInt(1, entity.getId());
                 psTicket.addBatch();
             }
@@ -82,8 +84,8 @@ public class JDBCExhibitionDao implements ExhibitionDao {
     @Override
     public Exhibition findById(int id) {
         Exhibition result = new Exhibition();
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
             ResultSet rs = ps.executeQuery();
             ExhibitionMapper mapper = new ExhibitionMapper();
             if (rs.next()) {
@@ -94,10 +96,11 @@ public class JDBCExhibitionDao implements ExhibitionDao {
         }
         return result;
     }
-    public List<Exhibition> getExhibitionForUser(Integer userId){
+
+    public List<Exhibition> getExhibitionForUser(Integer userId) {
         List<Exhibition> result = new ArrayList<>();
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.for.user"))) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.for.user"))) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             ExhibitionMapper mapper = new ExhibitionMapper();
@@ -111,10 +114,37 @@ public class JDBCExhibitionDao implements ExhibitionDao {
     }
 
     @Override
+    public List<Exhibition> viewAllExhibition(Integer offset, Integer noOfRecords) {
+        String query = "select SQL_CALC_FOUND_ROWS * from exhibition_event limit "
+                + offset + ", " + noOfRecords;
+        List<Exhibition> result = new ArrayList<>();
+        ExhibitionMapper mapper = new ExhibitionMapper();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result.add(mapper.extractFromResultSet(rs));
+            }
+            rs.close();
+            rs = ps.executeQuery("SELECT FOUND_ROWS()");
+            if (rs.next()) {this.noOfRecords = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public int getNoOfRecords() {
+        return noOfRecords;
+    }
+    @Override
     public List<Exhibition> findAll() {
         List<Exhibition> result = new ArrayList<>();
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
             ResultSet rs = ps.executeQuery();
             ExhibitionMapper mapper = new ExhibitionMapper();
             while (rs.next()) {

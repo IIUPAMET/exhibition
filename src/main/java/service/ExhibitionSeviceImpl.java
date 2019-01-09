@@ -17,6 +17,11 @@ public class ExhibitionSeviceImpl implements ExhibitionService {
         return exhibitionDao.findAll();
     }
 
+    @Override
+    public List<Exhibition> viewAllExhibition(Integer offset, Integer noOfRecords) {
+        return exhibitionDao.viewAllExhibition(offset, noOfRecords);
+    }
+
     public List<Exhibition> getExhibitionForUser(Integer userId){
         return exhibitionDao.getExhibitionForUser(userId);
     }
