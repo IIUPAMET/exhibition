@@ -46,14 +46,20 @@ public class JDBCTicketDao implements TicketDao {
     }
 
     @Override
-    public Ticket buyTicket(Integer exhibitionId, Integer requestId) {
+    public Ticket buyTicket(Integer exhibitionId, Integer userId) {
         try(Connection connection = dataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.tickets.which.not.bought"));
-            PreparedStatement ps1 = connection.prepareStatement(QueryBundle.getProperty("insert.ticket"))) {
+            PreparedStatement ps1 = connection.prepareStatement(QueryBundle.getProperty("update.buy.ticket"));
+            PreparedStatement ps2 = connection.prepareStatement(QueryBundle.getProperty("select.wishlist.byExhib.and.userId"))) {
             connection.setAutoCommit(false);
+            ps.setInt(1, exhibitionId);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-                ps1.setInt(1,requestId);
+                ps2.setInt(1,userId);
+                ps2.setInt(2,exhibitionId);
+                ResultSet rs2 = ps2.executeQuery();
+                if(rs2.next())
+                ps1.setInt(1,rs2.getInt("id"));
                 ps1.setInt(2,rs.getInt("id"));
                 Integer success = ps1.executeUpdate();
                 if(success == 1){

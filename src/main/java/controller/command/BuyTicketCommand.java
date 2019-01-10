@@ -1,9 +1,9 @@
 package controller.command;
 
+import model.entity.User;
 import service.TicketService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 
 public class BuyTicketCommand implements Command{
 
@@ -14,12 +14,13 @@ public class BuyTicketCommand implements Command{
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ParseException {
+    public String execute(HttpServletRequest request){
+
 
         ticketService.buyTicket(
                 Integer.parseInt(request.getParameter("exhibitionId")),
-                Integer.parseInt(request.getParameter("requestId")));
+                ((User)request.getSession().getAttribute("user")).getId());
 
-        return "/WEB-INF/user/user.jsp";
+        return "redirect: home";
     }
 }

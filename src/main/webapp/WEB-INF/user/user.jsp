@@ -94,9 +94,12 @@
                                     <td><c:out value="${exhibition.author}"/></td>
                                     <td>
                                         <div class="btn-group">
-                                            <a class="btn btn-primary" href="#"><i class="icon_plus_alt2"></i></a>
-                                            <a class="btn btn-success" href="#"><i class="icon_check_alt2"></i></a>
-                                            <a class="btn btn-danger" href="#"><i class="icon_close_alt2"></i></a>
+                                            <form method="post">
+                                                <button formaction="${pageContext.request.contextPath}/exhib/user/buyticket"
+                                                type="submit" name="exhibitionId" value="${exhibition.id}">
+                                                buy
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -106,21 +109,6 @@
                     </section>
                 </div>
             </div>
-            <c:if test="${sessionScope.user.role == ('USER')}">
-                <p>This will be displayed only if the user has the role "admin".</p>
-                <button class="btn btn-info btn-lg btn-block"
-                        href="${pageContext.request.contextPath}/exhib/admin/create_exhibition" type="submit">
-                    Start as USER
-                </button>
-            </c:if>
-            <c:if test="${sessionScope.user.role == 'ADMIN'}">
-                <p>This will be displayed only if the user has the role "admin".</p>
-                <button class="btn btn-info btn-lg btn-block"
-                        href="${pageContext.request.contextPath}/exhib/admin/createexhibition" type="submit">
-                    Start as ADMIN
-                </button>
-                <a href="${pageContext.request.contextPath}/exhib/admin/createexhibition">aa</a>
-            </c:if>
         </section>
     </section>
 

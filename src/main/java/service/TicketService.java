@@ -11,9 +11,9 @@ public class TicketService {
         this.ticketDao = ticketDao;
     }
 
-    public Ticket buyTicket(Integer exhibitionId, Integer requestId){
+    public Ticket buyTicket(Integer exhibitionId, Integer userId){
 
-        ticketDao.buyTicket(exhibitionId, requestId);
+        ticketDao.buyTicket(exhibitionId, userId);
 
         return null;
     }

@@ -4,6 +4,7 @@ import com.mysql.jdbc.Statement;
 import model.dao.ExhibitionDao;
 import model.dao.mapper.ExhibitionMapper;
 import model.entity.Exhibition;
+import org.apache.log4j.Logger;
 import util.QueryBundle;
 
 import javax.sql.DataSource;
@@ -11,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,10 @@ import java.util.List;
 public class JDBCExhibitionDao implements ExhibitionDao {
     private DataSource dataSource;
 
-    private int noOfRecords;
+    private static int noOfRecords;
+
+    private static Logger LOG = Logger.getLogger(ExhibitionDao.class);
+
 
     public JDBCExhibitionDao(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -51,6 +56,7 @@ public class JDBCExhibitionDao implements ExhibitionDao {
              PreparedStatement psExhibition = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"), Statement.RETURN_GENERATED_KEYS);
              PreparedStatement psTicket = connection.prepareStatement(QueryBundle.getProperty("insert.ticket"));
         ) {
+            LOG.debug(MessageFormat.format("Exhibition {0}", entity.toString()));
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(8);
             psExhibition.setString(1, entity.getName());
@@ -70,13 +76,9 @@ public class JDBCExhibitionDao implements ExhibitionDao {
                 psTicket.setInt(1, entity.getId());
                 psTicket.addBatch();
             }
-
-            Thread.sleep(30000);
             psTicket.executeBatch();
             connection.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -137,7 +139,7 @@ public class JDBCExhibitionDao implements ExhibitionDao {
         return result;
     }
 
-    public int getNoOfRecords() {
+    public static int getNoOfRecords() {
         return noOfRecords;
     }
     @Override
