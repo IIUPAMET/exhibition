@@ -1,13 +1,14 @@
 package service;
 
-import model.dao.impl.*;
 import model.dao.UserDao;
 import model.entity.User;
+import org.apache.log4j.Logger;
 
-import java.util.List;
+import java.text.MessageFormat;
 import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
+    public static final Logger LOG = Logger.getLogger(UserServiceImpl.class);
 
     private UserDao userDao;
 
@@ -16,41 +17,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-            return userDao.findAll();
-    }
-
-    @Override
     public Optional<User> login(String login, String pass) {
-        Optional<User> result; //= Optional.empty();
-            result = userDao.login(login, pass);
+        Optional<User> result;
+        result = userDao.login(login, pass);
+        if(!result.isPresent())
+            throw new RuntimeException("User not found");
         return result;
     }
 
     @Override
-    public User create(User user) {
-            userDao.create(user);
-        return null;
-    }
-
-    @Override
-    public User create(String login, String pass, String ukrname, String engname, String email) {
+    public User create(String login, String pass, String ukrName, String engname, String email) {
         User user = new User();
         user.setPass(pass);
         user.setLogin(login);
         user.setMail(email);
         user.setNameEN(engname);
-        user.setNameUA(ukrname);
+        user.setNameUA(ukrName);
         user.setRole(User.Role.USER);
-            userDao.create(user);
+
+        userDao.create(user);
         return null;
     }
 
     @Override
-    public void addwish(Integer user_id, Integer exhib_id) {
-            userDao.addwish(user_id, exhib_id);
-
+    public void addWish(Integer user_id, Integer exhib_id) {
+        if(LOG.isDebugEnabled())
+            LOG.debug(MessageFormat.format("Start User[{0}] add wish for Exhibition[{1}]", user_id, exhib_id));
+        userDao.addWish(user_id, exhib_id);
     }
-
-
 }

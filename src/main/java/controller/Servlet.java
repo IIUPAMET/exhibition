@@ -22,13 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Servlet extends HttpServlet {
 
     // Инициализация логера
-    private static final Logger log = Logger.getLogger(Servlet.class);
+    public static final Logger LOG = Logger.getLogger(Servlet.class);
     private Map<String, Command> commands = new HashMap<>();
 
 
     public void init(ServletConfig servletConfig){
-        log.debug("asas" + new Object().toString() + " ");
-        log.info("Это информационное сообщение!");
         servletConfig.getServletContext()
                 .setAttribute("loggedUsers", new ConcurrentHashMap<String, HttpSession>());
 
@@ -40,7 +38,7 @@ public class Servlet extends HttpServlet {
         commands.put("logout", CommandModule.getInstance().getLogOutCommand());
         commands.put("singup",  CommandModule.getInstance().getSingUpCommand());
         commands.put("user/user", CommandModule.getInstance().getUserPageCommand());
-        commands.put("user/addwish",  CommandModule.getInstance().getAddWishCommand());
+        commands.put("user/addWish",  CommandModule.getInstance().getAddWishCommand());
         commands.put("user/buyticket", CommandModule.getInstance().getBuyTicketCommand());
 
     }
@@ -55,7 +53,6 @@ public class Servlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        log.info("Это информационное сообщение!");
 
         Command command = getCommand(request);
         String page = null;

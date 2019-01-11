@@ -1,13 +1,14 @@
 package controller.command;
 
 import model.entity.User;
+import org.apache.log4j.Logger;
 import service.UserService;
-import service.UserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 
 public class AddWishCommand implements Command {
+    public static final Logger LOG = Logger.getLogger(AddWishCommand.class);
+
     private UserService userService;
 
     public AddWishCommand(UserService userService) {
@@ -15,11 +16,11 @@ public class AddWishCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ParseException {
-
+    public String execute(HttpServletRequest request) {
+        LOG.debug("Exhibition Id: "+ request.getParameter("addWish"));
         User user = (User) request.getSession().getAttribute("user");
-        Integer id = Integer.parseInt(request.getParameter("addwish"));
-        userService.addwish(user.getId(), id);
+        Integer id = Integer.parseInt(request.getParameter("addWish"));
+        userService.addWish(user.getId(), id);
 
         return ("redirect: home");
     }

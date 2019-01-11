@@ -3,6 +3,7 @@ package model.dao.impl;
 import model.dao.UserDao;
 import model.dao.mapper.UserMapper;
 import model.entity.User;
+import org.apache.log4j.Logger;
 import util.QueryBundle;
 
 import javax.sql.DataSource;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class JDBCUserDao implements UserDao {
+    public static final Logger LOG = Logger.getLogger(JDBCUserDao.class);
+
     private DataSource dataSource;
 
     public JDBCUserDao(DataSource dataSource) {
@@ -18,7 +21,7 @@ public class JDBCUserDao implements UserDao {
     }
 
     @Override
-    public void create(User entity) {
+    public Integer create(User entity) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.user"))) {
             ps.setString(1, entity.getLogin());
@@ -29,8 +32,9 @@ public class JDBCUserDao implements UserDao {
             ps.setString(6, entity.getRole().name());
             ps.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("", e);
         }
+        return null;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class JDBCUserDao implements UserDao {
                 result = mapper.extractFromResultSet(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("", e);
         }
         return result;
     }
@@ -62,7 +66,6 @@ public class JDBCUserDao implements UserDao {
 
     @Override
     public void delete(int id) {
-
     }
 
     @Override
@@ -78,20 +81,20 @@ public class JDBCUserDao implements UserDao {
                 result = Optional.of(mapper.extractFromResultSet(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error(e);
         }
         return result;
     }
 
     @Override
-    public void addwish(Integer user_id, Integer exhib_id) {
+    public void addWish(Integer user_id, Integer exhib_id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.addwish"))) {
             ps.setInt(1, user_id);
             ps.setInt(2, exhib_id);
             ps.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error(e);
         }
     }
 

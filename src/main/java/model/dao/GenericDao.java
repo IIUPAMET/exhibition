@@ -3,7 +3,7 @@ package model.dao;
 import java.util.List;
 
 public interface GenericDao<T>{
-    void create(T entity);
+    Integer create(T entity);
 
     T findById(int id);
 

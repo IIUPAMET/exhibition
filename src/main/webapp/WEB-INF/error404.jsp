@@ -50,7 +50,7 @@
     <p class="text-404">404</p>
 
     <h2>Aww Snap!</h2>
-    <p>Something went wrong or that page doesn’t exist yet. <br><a href="index.html">Return Home</a></p>
+    <p>Something went wrong or that page doesn’t exist yet. <br><a href="${pageContext.request.contextPath}/exhib/home">Return Home</a></p>
 </div>
 
 

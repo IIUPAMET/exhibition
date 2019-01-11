@@ -51,7 +51,7 @@ public class CommandModule {
         ticketDao = new JDBCTicketDao(dataSource);
 
         userService = new UserServiceImpl(userDao);
-        exhibitionService = new ExhibitionSeviceImpl(exhibitionDao);
+        exhibitionService = new ExhibitionSeviceImpl(exhibitionDao, ticketDao);
         requestService = new RequestService(requestDao);
         ticketService = new TicketService(ticketDao);
 

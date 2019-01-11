@@ -54,11 +54,6 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" placeholder="numOfTickets" name="numoftickets">
                         </div>
-
-                        <label class="control-label col-sm-2">Description</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control ckeditor" name="description" rows="6"></textarea>
-                        </div>
                     </div>
                     <button class="btn btn-success" formaction="${pageContext.request.contextPath}/exhib/admin/create">Success</button>
                 </form>

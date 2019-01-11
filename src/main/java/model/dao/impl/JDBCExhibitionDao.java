@@ -13,74 +13,42 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JDBCExhibitionDao implements ExhibitionDao {
+    private static Logger LOG = Logger.getLogger(ExhibitionDao.class);
     private DataSource dataSource;
 
     private static int noOfRecords;
-
-    private static Logger LOG = Logger.getLogger(ExhibitionDao.class);
-
 
     public JDBCExhibitionDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-
     @Override
-    public void create(Exhibition entity) {
+    public Integer create(Exhibition entity) {
+        LOG.debug("Create Exhibition DaoMethod");
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"))) {
+             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"), Statement.RETURN_GENERATED_KEYS);) {
             ps.setString(1, entity.getName());
             ps.setDate(2, java.sql.Date.valueOf(entity.getStartDate()));
             ps.setDate(3, java.sql.Date.valueOf(entity.getEndDate()));
             ps.setString(4, entity.getThema());
             ps.setString(5, entity.getAuthor());
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void crateExhibition(String name, LocalDate start, LocalDate end, String theme, String author, String description) {
-
-    }
-
-    @Override
-    public void exhibitionWithTickets(Exhibition entity, Integer numOfTickets) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement psExhibition = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"), Statement.RETURN_GENERATED_KEYS);
-             PreparedStatement psTicket = connection.prepareStatement(QueryBundle.getProperty("insert.ticket"));
-        ) {
-            LOG.debug(MessageFormat.format("Exhibition {0}", entity.toString()));
-            connection.setAutoCommit(false);
-            connection.setTransactionIsolation(8);
-            psExhibition.setString(1, entity.getName());
-            psExhibition.setDate(2, java.sql.Date.valueOf(entity.getStartDate()));
-            psExhibition.setDate(3, java.sql.Date.valueOf(entity.getEndDate()));
-            psExhibition.setString(4, entity.getThema());
-            psExhibition.setString(5, entity.getAuthor());
-            psExhibition.executeUpdate();
-            try (ResultSet generatedKeys = psExhibition.getGeneratedKeys()) {
+            ps.executeUpdate();
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    entity.setId(generatedKeys.getInt(1));
+                    LOG.debug(MessageFormat.format("Exhibition successful created ''{0}''", entity.toString()));
+                    return generatedKeys.getInt(1);
                 } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
             }
-            for (int i = 0; i < numOfTickets; i++) {
-                psTicket.setInt(1, entity.getId());
-                psTicket.addBatch();
-            }
-            psTicket.executeBatch();
-            connection.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("", e);
         }
+        return null;
     }
 
     @Override
@@ -94,13 +62,14 @@ public class JDBCExhibitionDao implements ExhibitionDao {
                 result = mapper.extractFromResultSet(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("", e);
         }
         return result;
     }
 
     public List<Exhibition> getExhibitionForUser(Integer userId) {
         List<Exhibition> result = new ArrayList<>();
+        LOG.debug("Exhibition for User Dao Method");
         try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.for.user"))) {
             ps.setInt(1, userId);
@@ -109,14 +78,16 @@ public class JDBCExhibitionDao implements ExhibitionDao {
             while (rs.next()) {
                 result.add(mapper.extractFromResultSet(rs));
             }
+            LOG.debug(MessageFormat.format("Count of Exhibitions for user ''{0}''", result.size()));
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("", e);
         }
         return result;
     }
 
     @Override
     public List<Exhibition> viewAllExhibition(Integer offset, Integer noOfRecords) {
+        LOG.debug("View all Exhibition DaoMethod");
         String query = "select SQL_CALC_FOUND_ROWS * from exhibition_event limit "
                 + offset + ", " + noOfRecords;
         List<Exhibition> result = new ArrayList<>();
@@ -129,11 +100,12 @@ public class JDBCExhibitionDao implements ExhibitionDao {
             }
             rs.close();
             rs = ps.executeQuery("SELECT FOUND_ROWS()");
-            if (rs.next()) {this.noOfRecords = rs.getInt(1);
+            if (rs.next()) {
+                this.noOfRecords = rs.getInt(1);
             }
-
+            LOG.debug(MessageFormat.format("Count of Exhibitions for user ''{0}''", result.size()));
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("", e);
         }
 
         return result;
@@ -142,6 +114,7 @@ public class JDBCExhibitionDao implements ExhibitionDao {
     public static int getNoOfRecords() {
         return noOfRecords;
     }
+
     @Override
     public List<Exhibition> findAll() {
         List<Exhibition> result = new ArrayList<>();
@@ -153,7 +126,7 @@ public class JDBCExhibitionDao implements ExhibitionDao {
                 result.add(mapper.extractFromResultSet(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("", e);
         }
         return result;
     }

@@ -6,5 +6,5 @@ import java.util.Map;
 import java.util.Set;
 
 public interface RequestDao extends GenericDao<Request> {
-    public Map<Integer, Integer> getWithListByUserId(int userId);
+    Map<Integer, Integer> getWithListByUserId(int userId);
 }

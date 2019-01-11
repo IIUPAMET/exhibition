@@ -1,15 +1,22 @@
 package service;
 
+import controller.command.BuyTicketCommand;
 import model.dao.ExhibitionDao;
+import model.dao.TicketDao;
 import model.entity.Exhibition;
+import org.apache.log4j.Logger;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class ExhibitionSeviceImpl implements ExhibitionService {
-    ExhibitionDao exhibitionDao;
-    public ExhibitionSeviceImpl(ExhibitionDao exhibitionDao) {
+    public static final Logger LOG = Logger.getLogger(BuyTicketCommand.class);
+    private ExhibitionDao exhibitionDao;
+    private TicketDao ticketDao;
+
+    public ExhibitionSeviceImpl(ExhibitionDao exhibitionDao,TicketDao ticketDao) {
         this.exhibitionDao = exhibitionDao;
+        this.ticketDao = ticketDao;
     }
 
     @Override
@@ -28,14 +35,13 @@ public class ExhibitionSeviceImpl implements ExhibitionService {
 
     @Override
     public void crateExhibition(String name, LocalDate start, LocalDate end, String theme, String author){
-
         Exhibition exhibition = new Exhibition();
         exhibition.setName(name);
         exhibition.setEndDate(end);
         exhibition.setStartDate(start);
         exhibition.setAuthor(author);
         exhibition.setThema(theme);
-            exhibitionDao.create(exhibition);
+        exhibitionDao.create(exhibition);
     }
 
     @Override
@@ -46,6 +52,8 @@ public class ExhibitionSeviceImpl implements ExhibitionService {
         exhibition.setStartDate(start);
         exhibition.setAuthor(author);
         exhibition.setThema(theme);
-            exhibitionDao.exhibitionWithTickets(exhibition, numOfTickets);
+
+       Integer exhibitionId = exhibitionDao.create(exhibition);
+       ticketDao.createTickets(exhibitionId, numOfTickets);
     }
 }

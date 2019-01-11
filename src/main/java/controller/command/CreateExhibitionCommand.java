@@ -1,5 +1,6 @@
 package controller.command;
 
+import org.apache.log4j.Logger;
 import service.ExhibitionService;
 import service.ExhibitionSeviceImpl;
 
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CreateExhibitionCommand implements Command{
+    public static final Logger LOG = Logger.getLogger(CreateExhibitionCommand.class);
 
     private ExhibitionService exhibitionService;
 

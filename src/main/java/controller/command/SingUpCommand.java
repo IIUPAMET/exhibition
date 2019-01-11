@@ -1,5 +1,6 @@
 package controller.command;
 
+import org.apache.log4j.Logger;
 import service.*;
 import validators.EmailValidator;
 import validators.StringValidator;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SingUpCommand implements Command {
+    public static final Logger LOG = Logger.getLogger(SingUpCommand.class);
 
     private UserService userService;
 
