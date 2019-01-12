@@ -29,8 +29,9 @@ public class JDBCExhibitionDao implements ExhibitionDao {
     @Override
     public Integer create(Exhibition entity) {
         LOG.debug("Create Exhibition DaoMethod");
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"), Statement.RETURN_GENERATED_KEYS);) {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.exhibition"), Statement.RETURN_GENERATED_KEYS);) {
             ps.setString(1, entity.getName());
             ps.setDate(2, java.sql.Date.valueOf(entity.getStartDate()));
             ps.setDate(3, java.sql.Date.valueOf(entity.getEndDate()));
@@ -40,11 +41,17 @@ public class JDBCExhibitionDao implements ExhibitionDao {
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     LOG.debug(MessageFormat.format("Exhibition successful created ''{0}''", entity.toString()));
+                    connection.commit();
                     return generatedKeys.getInt(1);
                 } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
             }
+        } catch (SQLException e) {
+            connection.rollback();
+            LOG.error("", e);
+        }
+        connection.setAutoCommit(true);
         } catch (SQLException e) {
             LOG.error("", e);
         }
@@ -54,13 +61,20 @@ public class JDBCExhibitionDao implements ExhibitionDao {
     @Override
     public Exhibition findById(int id) {
         Exhibition result = new Exhibition();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try ( PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
             ResultSet rs = ps.executeQuery();
             ExhibitionMapper mapper = new ExhibitionMapper();
             if (rs.next()) {
                 result = mapper.extractFromResultSet(rs);
             }
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            LOG.error("", e);
+        }
+        connection.setAutoCommit(true);
         } catch (SQLException e) {
             LOG.error("", e);
         }
@@ -70,8 +84,9 @@ public class JDBCExhibitionDao implements ExhibitionDao {
     public List<Exhibition> getExhibitionForUser(Integer userId) {
         List<Exhibition> result = new ArrayList<>();
         LOG.debug("Exhibition for User Dao Method");
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.for.user"))) {
+        try (Connection connection = dataSource.getConnection()) {
+        connection.setAutoCommit(false);
+        try ( PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.for.user"))) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             ExhibitionMapper mapper = new ExhibitionMapper();
@@ -79,6 +94,12 @@ public class JDBCExhibitionDao implements ExhibitionDao {
                 result.add(mapper.extractFromResultSet(rs));
             }
             LOG.debug(MessageFormat.format("Count of Exhibitions for user ''{0}''", result.size()));
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            LOG.error("", e);
+        }
+        connection.setAutoCommit(true);
         } catch (SQLException e) {
             LOG.error("", e);
         }
@@ -92,8 +113,9 @@ public class JDBCExhibitionDao implements ExhibitionDao {
                 + offset + ", " + noOfRecords;
         List<Exhibition> result = new ArrayList<>();
         ExhibitionMapper mapper = new ExhibitionMapper();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(query)) {
+        try (Connection connection = dataSource.getConnection()) {
+        connection.setAutoCommit(false);
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 result.add(mapper.extractFromResultSet(rs));
@@ -104,6 +126,13 @@ public class JDBCExhibitionDao implements ExhibitionDao {
                 this.noOfRecords = rs.getInt(1);
             }
             LOG.debug(MessageFormat.format("Count of Exhibitions for user ''{0}''", result.size()));
+
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            LOG.error("", e);
+        }
+        connection.setAutoCommit(true);
         } catch (SQLException e) {
             LOG.error("", e);
         }
@@ -118,13 +147,20 @@ public class JDBCExhibitionDao implements ExhibitionDao {
     @Override
     public List<Exhibition> findAll() {
         List<Exhibition> result = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
+        try (Connection connection = dataSource.getConnection()) {
+        connection.setAutoCommit(false);
+        try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.exhibition.all"))) {
             ResultSet rs = ps.executeQuery();
             ExhibitionMapper mapper = new ExhibitionMapper();
             while (rs.next()) {
                 result.add(mapper.extractFromResultSet(rs));
             }
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            LOG.error("", e);
+        }
+        connection.setAutoCommit(true);
         } catch (SQLException e) {
             LOG.error("", e);
         }

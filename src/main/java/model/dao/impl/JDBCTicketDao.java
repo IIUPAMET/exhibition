@@ -23,6 +23,67 @@ public class JDBCTicketDao implements TicketDao {
         this.dataSource = dataSource;
     }
 
+    @Override
+    public Ticket buyTicket(Integer exhibitionId, Integer userId) {
+        LOG.debug(MessageFormat.format("Start buy ticket on Exhibition ''{0}'' for user ''{1}''", exhibitionId, userId));
+        Ticket ticket = new Ticket();
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.tickets.which.not.bought"));
+             PreparedStatement ps1 = connection.prepareStatement(QueryBundle.getProperty("update.buy.ticket"));
+             PreparedStatement ps2 = connection.prepareStatement(QueryBundle.getProperty("select.wishlist.byExhib.and.userId"))) {
+            ps.setInt(1, exhibitionId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                ps2.setInt(1, userId);
+                ps2.setInt(2, exhibitionId);
+                ResultSet rs2 = ps2.executeQuery();
+                if (rs2.next()) {
+                    LOG.debug(MessageFormat.format("Duy Ticket for request id ''{0}''", rs2.getInt("id")));
+                    ticket.setRequestId(rs2.getInt("id"));
+                    ps1.setInt(1, rs2.getInt("id"));
+                    ps1.setInt(2, exhibitionId);
+                }
+                Integer success = ps1.executeUpdate();
+                if (success == 1) {
+                    connection.commit();
+                } else {
+                    connection.rollback();
+                }
+            }
+                connection.commit();
+            }catch (SQLException e) {
+                connection.rollback();
+                LOG.error("", e);
+            }
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            LOG.error("", e);
+        }
+        return ticket;
+    }
+
+    @Override
+    public void createTickets(Integer exhibitionId, Integer count) {
+
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.ticket"))) {
+            for (int i = 0; i < count; i++) {
+                ps.setInt(1, exhibitionId);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+            connection.commit();
+            }catch (SQLException e) {
+                connection.rollback();
+                LOG.error("", e);
+            }
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            LOG.error("", e);
+        }
+    }
 
     @Override
     public Integer create(Ticket entity) {
@@ -49,51 +110,4 @@ public class JDBCTicketDao implements TicketDao {
 
     }
 
-    @Override
-    public Ticket buyTicket(Integer exhibitionId, Integer userId) {
-        LOG.debug(MessageFormat.format("Start buy ticket on Exhibition ''{0}'' for user ''{1}''", exhibitionId, userId));
-        Ticket ticket = new Ticket();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.tickets.which.not.bought"));
-             PreparedStatement ps1 = connection.prepareStatement(QueryBundle.getProperty("update.buy.ticket"));
-             PreparedStatement ps2 = connection.prepareStatement(QueryBundle.getProperty("select.wishlist.byExhib.and.userId"))) {
-            connection.setAutoCommit(false);
-            ps.setInt(1, exhibitionId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ps2.setInt(1, userId);
-                ps2.setInt(2, exhibitionId);
-                ResultSet rs2 = ps2.executeQuery();
-                if (rs2.next()) {
-                    LOG.debug(MessageFormat.format("Duy Ticket for request id ''{0}''", rs2.getInt("id")));
-                    ticket.setRequestId(rs2.getInt("id"));
-                    ps1.setInt(1, rs2.getInt("id"));
-                    ps1.setInt(2, exhibitionId);
-                }
-                Integer success = ps1.executeUpdate();
-                if (success == 1) {
-                    connection.commit();
-                } else {
-                    connection.rollback();
-                }
-            }
-        } catch (SQLException e) {
-            LOG.error("", e);
-        }
-        return ticket;
-    }
-
-    @Override
-    public void createTickets(Integer exhibitionId, Integer count) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.ticket"))) {
-            for (int i = 0; i < count; i++) {
-                ps.setInt(1, exhibitionId);
-                ps.addBatch();
-            }
-            ps.executeBatch();
-        } catch (SQLException e) {
-            LOG.error("", e);
-        }
-    }
 }

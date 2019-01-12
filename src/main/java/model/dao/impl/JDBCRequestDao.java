@@ -23,6 +23,32 @@ public class JDBCRequestDao implements RequestDao {
     }
 
     @Override
+    public Map<Integer, Integer> getWithListByUserId(int userId) {
+        LOG.debug(MessageFormat.format("Get Wishes for user with id ''{0}''", userId));
+
+        Map<Integer, Integer> wishMap = new HashMap<>();
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement psExhibition = connection.prepareStatement(QueryBundle.getProperty("select.wishlist"))) {
+                psExhibition.setInt(1, userId);
+                ResultSet rs = psExhibition.executeQuery();
+                while (rs.next()) {
+                    wishMap.put(rs.getInt("exhibition_event_id"), rs.getInt("exhibition_event_id"));
+                }
+                LOG.debug(MessageFormat.format("Count of exhibition form this user wishes ''{0}''", wishMap.size()));
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                LOG.error("", e);
+            }
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            LOG.error("", e);
+        }
+        return wishMap;
+    }
+
+    @Override
     public Integer create(Request entity) {
         return null;
     }
@@ -39,32 +65,10 @@ public class JDBCRequestDao implements RequestDao {
 
     @Override
     public void update(Request entity) {
-
     }
 
     @Override
     public void delete(int id) {
-
     }
 
-    @Override
-    public Map<Integer, Integer> getWithListByUserId(int userId) {
-        LOG.debug(MessageFormat.format("Get Wishes for user with id ''{0}''", userId));
-
-        Map<Integer, Integer> wishMap = new HashMap<>();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement psExhibition = connection.prepareStatement(QueryBundle.getProperty("select.wishlist"))
-        ) {
-            psExhibition.setInt(1, userId);
-            ResultSet rs = psExhibition.executeQuery();
-            while (rs.next()) {
-                wishMap.put(rs.getInt("exhibition_event_id"), rs.getInt("exhibition_event_id"));
-            }
-
-            LOG.debug(MessageFormat.format("Count of exhibition form this user wishes ''{0}''", wishMap.size()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return wishMap;
-    }
 }

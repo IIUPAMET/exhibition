@@ -22,15 +22,22 @@ public class JDBCUserDao implements UserDao {
 
     @Override
     public Integer create(User entity) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.user"))) {
-            ps.setString(1, entity.getLogin());
-            ps.setString(2, entity.getPass());
-            ps.setString(3, entity.getMail());
-            ps.setString(4, entity.getNameEN());
-            ps.setString(5, entity.getNameUA());
-            ps.setString(6, entity.getRole().name());
-            ps.execute();
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.user"))) {
+                ps.setString(1, entity.getLogin());
+                ps.setString(2, entity.getPass());
+                ps.setString(3, entity.getMail());
+                ps.setString(4, entity.getNameEN());
+                ps.setString(5, entity.getNameUA());
+                ps.setString(6, entity.getRole().name());
+                ps.execute();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                LOG.error("", e);
+            }
+            connection.setAutoCommit(true);
         } catch (SQLException e) {
             LOG.error("", e);
         }
@@ -41,17 +48,69 @@ public class JDBCUserDao implements UserDao {
     public User findById(int id) {
         User result = new User();
         UserMapper mapper = new UserMapper();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.user.byId"))) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                result = mapper.extractFromResultSet(rs);
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.user.byId"))) {
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    result = mapper.extractFromResultSet(rs);
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                LOG.error("", e);
             }
+            connection.setAutoCommit(true);
         } catch (SQLException e) {
             LOG.error("", e);
         }
         return result;
+    }
+
+    @Override
+    public Optional<User> login(String login, String pass) {
+        Optional<User> result = Optional.empty();
+        UserMapper mapper = new UserMapper();
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.user.login"))) {
+                ps.setString(1, login);
+                ps.setString(2, pass);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    result = Optional.of(mapper.extractFromResultSet(rs));
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                LOG.error("", e);
+            }
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            LOG.error(e);
+        }
+        return result;
+    }
+
+    @Override
+    public void addWish(Integer user_id, Integer exhib_id) {
+
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.addwish"))) {
+                ps.setInt(1, user_id);
+                ps.setInt(2, exhib_id);
+                ps.execute();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                LOG.error("", e);
+            }
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            LOG.error(e);
+        }
     }
 
     @Override
@@ -66,36 +125,6 @@ public class JDBCUserDao implements UserDao {
 
     @Override
     public void delete(int id) {
-    }
-
-    @Override
-    public Optional<User> login(String login, String pass) {
-        Optional<User> result = Optional.empty();
-        UserMapper mapper = new UserMapper();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("select.user.login"))) {
-            ps.setString(1, login);
-            ps.setString(2, pass);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                result = Optional.of(mapper.extractFromResultSet(rs));
-            }
-        } catch (SQLException e) {
-            LOG.error(e);
-        }
-        return result;
-    }
-
-    @Override
-    public void addWish(Integer user_id, Integer exhib_id) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(QueryBundle.getProperty("insert.addwish"))) {
-            ps.setInt(1, user_id);
-            ps.setInt(2, exhib_id);
-            ps.execute();
-        } catch (SQLException e) {
-            LOG.error(e);
-        }
     }
 
 }
